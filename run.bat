@@ -1,0 +1,9 @@
+@echo off
+echo Starting ML Training...
+python ml\train_model.py
+
+echo Starting Backend...
+start cmd /k "cd backend && uvicorn main:app --reload"
+
+echo Starting Frontend...
+start cmd /k "cd frontend && npm install && npm run dev"

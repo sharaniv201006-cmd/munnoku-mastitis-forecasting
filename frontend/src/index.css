@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: var(--color-gray-50);
+    color: var(--color-gray-900);
+    font-family: var(--font-sans);
+  }
+}
+
+@theme {
+  --color-primary: #047857;
+  --color-primary-light: #059669;
+  --color-primary-dark: #065f46;
+  --color-risk-high: #dc2626;
+  --color-risk-moderate: #d97706;
+  --color-risk-low: #16a34a;
+}

@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Munnokku SIH 2026 - AWS CloudFormation Template for Mastitis Forecasting Infrastructure'
+
+Parameters:
+  DBMasterUsername:
+    Type: String
+    Default: postgres
+    Description: Master username for RDS PostgreSQL
+  DBMasterPassword:
+    Type: String
+    NoEcho: true
+    Default: Munnokku2026Secure!
+    Description: Master password for RDS PostgreSQL (Min 8 characters)
+  S3BucketName:
+    Type: String
+    Default: munnokku-mastitis-data-2026
+    Description: S3 Bucket for ML models and datasets
+
+Resources:
+  # 1. Amazon S3 Bucket for Model Artifacts & Datasets
+  MLArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3BucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  # 2. Security Group for RDS PostgreSQL
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable PostgreSQL access for Munnokku backend
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 0.0.0.0/0
+
+  # 3. Amazon RDS PostgreSQL Database Instance (Free Tier Eligible)
+  MastitisPostgreSQLDB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: munnokku-mastitis-db
+      AllocatedStorage: '20'
+      DBInstanceClass: db.t3.micro
+      Engine: postgres
+      EngineVersion: '15.4'
+      MasterUsername: !Ref DBMasterUsername
+      MasterUserPassword: !Ref DBMasterPassword
+      PubliclyAccessible: true
+      VPCSecurityGroups:
+        - !GetAtt DBSecurityGroup.GroupId
+      BackupRetentionPeriod: 1
+      DeleteAutomatedBackups: true
+      SkipFinalSnapshot: true
+
+Outputs:
+  RDSEndpoint:
+    Description: PostgreSQL Database Host Endpoint
+    Value: !GetAtt MastitisPostgreSQLDB.Endpoint.Address
+  DatabaseURL:
+    Description: Formatted Database Connection URL
+    Value: !Sub "postgresql://${DBMasterUsername}:${DBMasterPassword}@${MastitisPostgreSQLDB.Endpoint.Address}:5432/postgres"
+  S3Bucket:
+    Description: S3 Bucket Name
+    Value: !Ref MLArtifactsBucket
