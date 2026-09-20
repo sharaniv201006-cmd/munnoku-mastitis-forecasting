@@ -39,13 +39,21 @@ def on_startup():
     except Exception as e:
         print(f"Auto-seed note: {e}")
 
+FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend", "dist")
+if not os.path.exists(FRONTEND_DIST):
+    FRONTEND_DIST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "frontend_dist")
+
 @app.get("/")
 def read_root():
+    index_file = os.path.join(FRONTEND_DIST, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
     return {
         "project": "Munnokku Bovine Mastitis Forecasting System",
         "system_status": "operational",
         "docs_url": "/docs"
     }
+
 
 @app.get("/health")
 def health_check():
