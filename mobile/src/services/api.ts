@@ -1,12 +1,13 @@
 import { Animal, AnimalDashboardData, HerdSummary, Prediction } from '../types';
 import { Platform } from 'react-native';
 
-// Dynamically use localhost for Web/iOS and 10.0.2.2 for Android emulator, or Cloud API URL
-export let API_BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8000' : 'http://localhost:8000';
+// Live Render Cloud Backend Endpoint
+export let API_BASE_URL = 'https://munnoku-mastitis-forecasting.onrender.com';
 
 export function setApiBaseUrl(url: string) {
   API_BASE_URL = url;
 }
+
 
 const FALLBACK_ANIMALS: Animal[] = [
   {
