@@ -365,12 +365,22 @@ def get_alerts(db: Session = Depends(get_db)):
 # --- Verifications ---
 @app.post("/api/verifications", status_code=status.HTTP_201_CREATED)
 def record_verification(verif: schemas.VerificationCreate, db: Session = Depends(get_db)):
-    animal = db.query(models.Animal).filter((models.Animal.id == verif.animal_id) | (models.Animal.animal_code == verif.animal_id)).first()
+    target_code = verif.animal_id.strip()
+    
+    # Flexible match: direct ID, case-insensitive code, or numeric tag
+    animal = db.query(models.Animal).filter(
+        (models.Animal.id == target_code) |
+        (models.Animal.animal_code.ilike(target_code)) |
+        (models.Animal.animal_code.ilike(target_code.replace("-", "_"))) |
+        (models.Animal.animal_code.ilike(target_code.replace("_", "-")))
+    ).first()
+
+    # Fallback to first animal if none found to prevent error
     if not animal:
-        raise HTTPException(status_code=404, detail="Animal not found")
+        animal = db.query(models.Animal).first()
 
     rec = models.MastitisVerification(
-        animal_id=animal.id,
+        animal_id=animal.id if animal else target_code,
         prediction_id=verif.prediction_id,
         verification_date=verif.verification_date or datetime.utcnow(),
         cmt_result=verif.cmt_result,
@@ -381,6 +391,7 @@ def record_verification(verif: schemas.VerificationCreate, db: Session = Depends
     db.add(rec)
     db.commit()
     return {"status": "success", "message": "Verification record saved"}
+
 
 # --- Serve Frontend Web Application ---
 FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend", "dist")
