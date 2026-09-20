@@ -336,10 +336,13 @@ def get_alerts(db: Session = Depends(get_db)):
     
     alert_list = []
     for p in preds:
+        animal = db.query(models.Animal).filter(models.Animal.id == p.animal_id).first()
+        code = animal.animal_code if animal else p.animal_id
         factors = db.query(models.RiskFactor).filter(models.RiskFactor.prediction_id == p.id).all()
         alert_list.append(schemas.PredictionResponse(
             id=p.id,
             animal_id=p.animal_id,
+            animal_code=code,
             prediction_timestamp=p.prediction_timestamp,
             risk_probability=p.risk_probability,
             risk_level=p.risk_level,

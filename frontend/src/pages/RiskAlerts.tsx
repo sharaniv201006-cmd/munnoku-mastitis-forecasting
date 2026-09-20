@@ -71,7 +71,7 @@ export const RiskAlerts = () => {
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
                     <div>
                       <h3 className="text-lg font-bold text-gray-900 flex items-center">
-                        Animal {alert.animal_id}
+                        {alert.animal_code || alert.animal_id}
                         <span className={`ml-3 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                           alert.risk_level === 'HIGH' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
                         }`}>

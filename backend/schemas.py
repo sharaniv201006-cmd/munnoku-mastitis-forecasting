@@ -41,12 +41,14 @@ class RiskFactorResponse(BaseModel):
 class PredictionResponse(BaseModel):
     id: Optional[str] = None
     animal_id: str
+    animal_code: Optional[str] = None
     prediction_timestamp: datetime
     risk_probability: float
     risk_level: str  # 'NO RISK' | 'LOW' | 'MODERATE' | 'HIGH'
     forecast_horizon: str = "7-14 days"
     data_confidence: str = "HIGH"  # 'HIGH' | 'LOW' | 'INSUFFICIENT'
     top_factors: Optional[List[RiskFactorResponse]] = []
+
 
     class Config:
         from_attributes = True

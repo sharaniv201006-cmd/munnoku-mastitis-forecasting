@@ -36,6 +36,7 @@ export interface RiskFactor {
 export interface Prediction {
   id?: string;
   animal_id: string;
+  animal_code?: string;
   prediction_timestamp: string;
   risk_probability: number;
   risk_level: 'NO RISK' | 'LOW' | 'MODERATE' | 'HIGH';

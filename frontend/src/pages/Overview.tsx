@@ -86,9 +86,8 @@ export const Overview = () => {
               <tbody className="divide-y divide-gray-100">
                 {alerts.map((alert) => (
                   <tr key={alert.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-4 font-medium text-gray-900">
-                      {/* Assuming animal code is passed or we fetch it. Using ID here for demo. */}
-                      COW-027
+                    <td className="px-4 py-4 font-semibold text-gray-900">
+                      {alert.animal_code || alert.animal_id}
                     </td>
                     <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -99,12 +98,12 @@ export const Overview = () => {
                         {alert.risk_level}
                       </span>
                     </td>
-                    <td className="px-4 py-4">{(alert.risk_probability * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-4 text-gray-500">
-                      {alert.top_factors?.[0]?.feature_name || 'N/A'}
+                    <td className="px-4 py-4 font-medium text-gray-900">{(alert.risk_probability * 100).toFixed(1)}%</td>
+                    <td className="px-4 py-4 text-gray-600">
+                      {alert.top_factors?.[0]?.feature_name || 'Multi-Signal Temporal Deviation'}
                     </td>
                     <td className="px-4 py-4">
-                      <Link to={`/animals/${alert.animal_id}`} className="text-primary hover:text-primary-dark font-medium">
+                      <Link to={`/animals/${alert.animal_id}`} className="text-primary hover:text-primary-dark font-medium transition-colors">
                         View Details →
                       </Link>
                     </td>
