@@ -3,6 +3,7 @@ import { api } from '../services/api';
 import type { HerdSummary, Prediction } from '../types';
 import { Link } from 'react-router-dom';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { formatCowTag } from '../utils/format';
 
 export const Overview = () => {
   const [summary, setSummary] = useState<HerdSummary | null>(null);
@@ -86,8 +87,8 @@ export const Overview = () => {
               <tbody className="divide-y divide-gray-100">
                 {alerts.map((alert) => (
                   <tr key={alert.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-4 font-semibold text-gray-900">
-                      {alert.animal_code || alert.animal_id}
+                    <td className="px-4 py-4 font-bold text-gray-900">
+                      {formatCowTag(alert.animal_code || alert.animal_id)}
                     </td>
                     <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${

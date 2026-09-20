@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import type { AnimalDashboardData, RiskFactor } from '../types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AlertTriangle, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { formatCowTag } from '../utils/format';
 
 export const AnimalIntelligence = () => {
   const { id } = useParams();
@@ -40,12 +41,7 @@ export const AnimalIntelligence = () => {
       <header className="flex flex-col md:flex-row md:items-start md:justify-between bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-3xl font-bold text-gray-900">{animal.animal_code}</h2>
-            {animal.animal_code === 'COW-027' && (
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200 uppercase tracking-wider">
-                DEMO SCENARIO
-              </span>
-            )}
+            <h2 className="text-3xl font-bold text-gray-900">{formatCowTag(animal.animal_code)}</h2>
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 border border-gray-200 uppercase tracking-wider">
               Prototype Prediction
             </span>

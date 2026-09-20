@@ -3,6 +3,7 @@ import { api } from '../services/api';
 import type { Animal, Prediction } from '../types';
 import { Link } from 'react-router-dom';
 import { Search, Filter, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { formatCowTag } from '../utils/format';
 
 export const Animals = () => {
   const [data, setData] = useState<{animal: Animal, prediction: Prediction}[]>([]);
@@ -91,7 +92,7 @@ export const Animals = () => {
             <tbody className="divide-y divide-gray-100">
               {filteredData.map(({animal, prediction}) => (
                 <tr key={animal.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 font-semibold text-gray-900">{animal.animal_code}</td>
+                  <td className="px-6 py-4 font-bold text-gray-900">{formatCowTag(animal.animal_code)}</td>
                   <td className="px-6 py-4 text-gray-600">{animal.breed}</td>
                   <td className="px-6 py-4 text-gray-600">{animal.age_years} yrs / {animal.parity}</td>
                   <td className="px-6 py-4 text-gray-600">{animal.days_in_milk}</td>
