@@ -1,5 +1,5 @@
 import { mockApi } from './mockApi';
-import type { AnimalDashboardData, HerdSummary, Prediction } from '../types';
+import type { Animal, AnimalDashboardData, HerdSummary, Prediction } from '../types';
 
 const FORCE_MOCK = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'https://munnoku-mastitis-forecasting.onrender.com');
@@ -16,12 +16,28 @@ export const api = {
     }
   },
   
-  getAnimals: async () => {
+  getAnimals: async (): Promise<{animal: Animal, prediction: Prediction}[]> => {
     if (FORCE_MOCK) return mockApi.getAnimals();
     try {
       const res = await fetch(`${BASE_URL}/api/animals`);
       if (!res.ok) throw new Error("API error");
-      return await res.json();
+      const data = await res.json();
+      return data.map((item: any) => {
+        if (item.animal && item.prediction) return item;
+        const { latest_prediction, ...animal } = item;
+        return {
+          animal: animal,
+          prediction: latest_prediction || {
+            animal_id: animal.id,
+            prediction_timestamp: new Date().toISOString(),
+            risk_probability: 0.05,
+            risk_level: 'LOW',
+            forecast_horizon: '7-14 days',
+            data_confidence: 'HIGH',
+            top_factors: []
+          }
+        };
+      });
     } catch {
       return mockApi.getAnimals();
     }
@@ -32,7 +48,11 @@ export const api = {
     try {
       const res = await fetch(`${BASE_URL}/api/animals/${id}`);
       if (!res.ok) throw new Error("API error");
-      return await res.json();
+      const result = await res.json();
+      return {
+        ...result,
+        history: result.history || result.readings || []
+      };
     } catch {
       return mockApi.getAnimalDetails(id);
     }
